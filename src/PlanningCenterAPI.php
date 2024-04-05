@@ -20,21 +20,21 @@ class PlanningCenterAPI
      *
      * @var null
      */
-    private $pcoApplicationId = null;
+    protected $pcoApplicationId = null;
 
     /**
      * Secret from PCO - Personal Access Toekn part 2
      * HTTP Basic Auth
      * @var null
      */
-    private $pcoSecret = null;
+    protected $pcoSecret = null;
 
     /**
      * Authorization string resulting from encoding the App ID and Secret
      * as part of HTTP Basic Auth
      * @var null
      */
-    private $authorization = null;
+    protected $authorization = null;
 
 	/**
 	 * API endpoint parameters: URL Prefix
@@ -42,7 +42,7 @@ class PlanningCenterAPI
 	 * @var string
 	 * @author costmo
 	 */
-	private $apiPrefix = 'https://api.planningcenteronline.com/';
+	protected $apiPrefix = 'https://api.planningcenteronline.com/';
 
 	/**
 	 * API endpoint parameters: URL Suffix
@@ -50,57 +50,57 @@ class PlanningCenterAPI
 	 * @var string
 	 * @author costmo
 	 */
-	private $apiSuffix = '/v2/';
+	protected $apiSuffix = '/v2/';
 
 
     /**
      * Full URL for the request
      * @var null
      */
-    private $endpoint = null;
+    protected $endpoint = null;
 
     /**
      * Requested module - required
      * @var null
      */
-    private $module = null;
+    protected $module = null;
 
     /**
      * Table to query within the module - required
      * @var null
      */
-    private $table = null;
+    protected $table = null;
 
     /**
      * id (Primary Key) for the request - optional
      * @var null
      */
-    private $id = null;
+    protected $id = null;
 
     /**
      * Related table.  For example, .../people/2345/emails would get emails for
      * person with id 2345 - optional
      * @var null
      */
-    private $associations = null;
+    protected $associations = null;
 
     /**
      * 2nd level id for the association
      * @var null
      */
-    private $id2 = null;
+    protected $id2 = null;
 
     /**
      * 2nd level association
      * @var null
      */
-    private $associations2 = null;
+    protected $associations2 = null;
 
     /**
      * 3rd level id for the association
      * @var null
      */
-    private $id3 = null;
+    protected $id3 = null;
 
 
 
@@ -109,7 +109,7 @@ class PlanningCenterAPI
      * If not provided, will default to 10,000
      * @var null
      */
-    private $maxRows = null;
+    protected $maxRows = null;
 
     /**
      * Array of GET parameters that are appended to the URL - optional
@@ -117,26 +117,26 @@ class PlanningCenterAPI
      *
      * @var null
      */
-    private $parameters = null;
+    protected $parameters = null;
 
     /**
      * POST data being sent to Planning Center
      * @var null
      */
-    private $data = null;
+    protected $data = null;
 
     /**
      * Guzzle error message
      *
      * @var null
      */
-    private $errorMessage = null;
+    protected $errorMessage = null;
 
     /**
      * HTTP headers required for the Guzzle request
      * @var null
      */
-    private $headers = null;
+    protected $headers = null;
 
     /**
      * Initialize the class (authentication params, etc.)
@@ -494,7 +494,7 @@ class PlanningCenterAPI
      * Exeucte a POST or PUT request
      *
      */
-    private function sendData($verb)
+    protected function sendData($verb)
     {
         // Initialize the Guzzle client
         $client = new Client(); //GuzzleHttp\Client
@@ -581,7 +581,7 @@ class PlanningCenterAPI
     /**
      * Reset all endpoint parameters to start a fresh query.
      */
-    private function reset()
+    protected function reset()
     {
         $this->endpoint = null;
         $this->module = null;
@@ -602,7 +602,7 @@ class PlanningCenterAPI
      *
      * @param $numRows
      */
-    private function setRequestWindow($numRows)
+    protected function setRequestWindow($numRows)
     {
         if ($this->fullResult($numRows)) {
             if ($numRows + $this->parameters['offset'] < $this->maxRows) {
@@ -626,7 +626,7 @@ class PlanningCenterAPI
      *
      * @param $maxRows
      */
-    private function setMaximumRows($maxRows)
+    protected function setMaximumRows($maxRows)
     {
         $this->maxRows = $maxRows;
 
@@ -640,7 +640,7 @@ class PlanningCenterAPI
      * @param $numRows
      * @return bool
      */
-    private function fullResult($numRows)
+    protected function fullResult($numRows)
     {
         return $numRows == $this->parameters['per_page'];
     }
@@ -653,7 +653,7 @@ class PlanningCenterAPI
      * @param $client
      * @return bool|mixed
      */
-    private function execute($endpoint, $client)
+    protected function execute($endpoint, $client)
     {
 
         $this->headers = ['Accept: application/json',
@@ -701,7 +701,7 @@ class PlanningCenterAPI
      *
      * https://api.planningcenteronline.com/services/v2/table/id/association?offset=25&include=addresses,phone_number
      */
-    private function buildEndpoint()
+    protected function buildEndpoint()
     {
         // Append the table - required
         $endpoint = $this->endpoint . $this->table;
@@ -732,12 +732,12 @@ class PlanningCenterAPI
      *
      * @return bool
      */
-    private function hasParameters()
+    protected function hasParameters()
     {
         return is_array($this->parameters);
     }
 
-    private function appendParameters()
+    protected function appendParameters()
     {
         // Add the ? to the URL
         $params = '?';
@@ -760,7 +760,7 @@ class PlanningCenterAPI
      * Extract the error messages from the Exception
      * @param $error
      */
-    private function saveErrorMessage($error)
+    protected function saveErrorMessage($error)
     {
         $e = json_decode($error, true);
 
@@ -772,7 +772,7 @@ class PlanningCenterAPI
      *
      * @return array
      */
-    private function setGetCurlopts()
+    protected function setGetCurlopts()
     {
         $curlopts = [
             CURLOPT_HTTPHEADER => $this->headers,
@@ -791,7 +791,7 @@ class PlanningCenterAPI
      *
      * @return array
      */
-    private function setPutCurlopts()
+    protected function setPutCurlopts()
     {
 
         $curlopts = [
@@ -811,7 +811,7 @@ class PlanningCenterAPI
      * Initialize the class.  Called from the constructor
      *
      */
-    private function initialize()
+    protected function initialize()
     {
         // Create the Authorization header
         $this->pcoApplicationId = getenv('PCO_APPLICATION_ID', null);
@@ -825,7 +825,7 @@ class PlanningCenterAPI
      * 100 results per page is the max size.  Offset 0 says start at the very first
      * result.
      */
-    private function initializeQueryWindow()
+    protected function initializeQueryWindow()
     {
         // Set per_page to 100 if not already set elsewhere
         if (is_null($this->parameters) || ! array_key_exists('per_page', $this->parameters)) $this->parameters['per_page'] = 100;
