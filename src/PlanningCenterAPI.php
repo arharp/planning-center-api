@@ -30,8 +30,15 @@ class PlanningCenterAPI
     protected $pcoSecret = null;
 
     /**
-     * Authorization string resulting from encoding the App ID and Secret
-     * as part of HTTP Basic Auth
+     * OAauth 2.0 token
+     *
+     * @var null
+     */
+    protected $pcoToken = null;
+
+    /**
+     * Authorization string
+     *
      * @var null
      */
     protected $authorization = null;
@@ -143,10 +150,13 @@ class PlanningCenterAPI
      *
      * PlanningCenterAPI constructor.
      */
-    public function __construct()
+    public function __construct($token = null)
     {
-        // Read configuration file
-        $this->initialize();
+        if ($token) {
+            $this->setOAuthToken($token);
+        } else {
+            $this->setPersonalAccessToken();
+        }
     }
 
     /**
@@ -808,15 +818,20 @@ class PlanningCenterAPI
     }
 
     /**
-     * Initialize the class.  Called from the constructor
+     * Initialize the class using personal access token set in the .env file.
      *
      */
-    protected function initialize()
+    protected function setPersonalAccessToken()
     {
-        // Create the Authorization header
         $this->pcoApplicationId = getenv('PCO_APPLICATION_ID', null);
         $this->pcoSecret = getenv('PCO_SECRET', null);
         $this->authorization = 'Authorization: Basic ' . base64_encode($this->pcoApplicationId . ':' . $this->pcoSecret);
+    }
+
+    protected function setOAuthToken($token)
+    {
+        $this->pcoToken = $token;
+        $this->authorization = 'Authorization: Bearer ' . $this->pcoToken;
     }
 
     /**
